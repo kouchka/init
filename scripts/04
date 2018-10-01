@@ -1,0 +1,15 @@
+#!/bin/bash
+echo "0 0 * * *
+if [ ! -e /etc/.crontab_cp ]; then
+echo \"Creating copy\"
+ sudo cp /etc/crontab /etc/.crontab_cp
+fi
+MD5=`md5sum /etc/crontab | awk '{ print $1 }'`
+MD5_BACKUP=`md5sum /etc/.crontab_cp | awk '{ print $1 }'`
+if [ -z $MD5 ] | [ -z $MD5_BACKUP ]; then
+ echo \"MD5 is empty.\"
+fi
+if [ \"$MD5\" != \"$MD5_BACKUP\" ]; then
+ echo \"Crontab has been modified\" | mail -s \"MODIF\" root
+fi
+sudo cp /etc/crontab /etc/.crontab_cp]" >> /etc/crontab
